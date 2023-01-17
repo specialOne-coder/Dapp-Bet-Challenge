@@ -1,0 +1,9 @@
+node_modules
+artifacts
+cache
+.env
+.openzeppelin
+.history
+contracts/oracles
+contracts/Proxies
+
