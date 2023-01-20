@@ -6,4 +6,5 @@ cache
 .history
 contracts/oracles
 contracts/Proxies
-
+React-Dapp-Template
+deployments

@@ -9,13 +9,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.1",
+    "@heroicons/react": "^1.0.6",
+    "@uniswap/widgets": "^2.8.1",
     "@web3modal/ethereum": "^2.0.0-rc.3",
     "@web3modal/react": "^2.0.0-rc.3",
+    "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
+    "jotai": "^1.13.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.7.1",
     "react-router-dom": "^6.6.2",
+    "sweetalert": "^2.1.2",
     "wagmi": "^0.10.10"
   },
   "devDependencies": {

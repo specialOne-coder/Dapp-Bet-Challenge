@@ -36,9 +36,21 @@ body {
     ),
     radial-gradient(at 50% 0%, rgb(85, 106, 47) 0, transparent 50%),
     radial-gradient(at 100% 0%, rgba(218, 159, 32, 0.473) 0, transparent 50%); */
-    background-image: url("../assets/ackblack.png");
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-image: url("../assets/bitgamb.png");
+    /* background-repeat: no-repeat; */
+    /* background-size: cover; */
+}
+
+.eth-card {
+  background-color: #7b7a9e;
+  background-image: radial-gradient(
+      at 67% 20%,
+      #aa8889 0,
+      transparent 59%
+    ),
+    radial-gradient(at 88% 35%, rgb(59, 107, 217) 0, transparent 50%),
+    radial-gradient(at 30% 95%, rgb(163, 126, 142) 0, transparent 45%),
+    radial-gradient(at 53% 75%, rgb(109, 61, 61) 0, transparent 45%);
 }
 
 .gradient-bg-services {

@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { FaConnectdevelop } from 'react-icons/fa'
 //import { AppContext } from '../context/AppContext';
+import { useWeb3Modal } from '@web3modal/react'
 import { shortenAddress } from '../utils/ShortAddress'
 
 const Welcome = () => {

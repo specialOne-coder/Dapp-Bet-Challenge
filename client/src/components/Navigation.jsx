@@ -4,7 +4,7 @@ import {
   Route,
   HashRouter as Router,
 } from "react-router-dom";
-import { HomePage } from "../pages/index";
+import { HomePage,SwaPage,LiquidityPage,BetPage,CreateBet } from "../pages/index";
 import {Navbar} from "./index";
 
 
@@ -14,9 +14,10 @@ const Navigation = () => {
       <Navbar />
       <Routes>
         <Route exact path="/" element={<HomePage />} />
-        <Route exact path="/item" element={<HomePage />} />
-        <Route exact path="/item" element={<HomePage />} />
-        <Route exact path="/item" element={<HomePage />} />
+        <Route exact path="/swap" element={<SwaPage />} />
+        <Route exact path="/liquidity" element={<LiquidityPage />} />
+        <Route exact path="/bets" element={<BetPage />} />
+        <Route exact path="/create" element={<CreateBet />} />
       </Routes>
     </Router>
   );

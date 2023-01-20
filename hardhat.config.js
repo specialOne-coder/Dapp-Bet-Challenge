@@ -24,7 +24,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.7",
+  solidity: "0.8.12",
   settings: {
     optimizer: {
       enabled: true,
@@ -52,7 +52,7 @@ module.exports = {
       // gasPrice: 8000000000
     },
     mumbai: {
-      url: "https://polygontestapi.terminet.io/rpc	",
+      url: "https://polygon-mumbai.g.alchemy.com/v2/54DDvmGUszYgrzD2Rce-J-cSUTsRbnDj",
       chainId: 80001,
       accounts: [process.env.PRIVATE_KEY],
       // gas: 2100000,

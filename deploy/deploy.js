@@ -17,10 +17,27 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
   await deploy('Bets', {
     // Put your contract name here
     from: deployer,
-    args: [],
+    args: ["0x6E072Ae62ed777875971F5016967E138F2F71F70"],
     log: true,
     waitConfirmations: 1,
   })
+
+  // await deploy('Betis', {
+  //   // Put your contract name here
+  //   from: deployer,
+  //   args: [100000000],
+  //   log: true,
+  //   waitConfirmations: 1,
+  // })
+
+  // await deploy('AMM', {
+  //   // Put your contract name here
+  //   from: deployer,
+  //   args: ["0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889","0x6E072Ae62ed777875971F5016967E138F2F71F70"],
+  //   log: true,
+  //   waitConfirmations: 1,
+  // })
+
 }
 
-module.exports.tags = ['Bets'] 
+module.exports.tags = ['BeTokenAmm'] 

@@ -4,7 +4,8 @@ import { HiMenuAlt4 } from 'react-icons/hi'
 import { AiOutlineClose } from 'react-icons/ai'
 //import { shortenAddress } from "../utils/ShortAdress";
 import { FaHammer } from 'react-icons/fa'
-import hlogo from '../assets/avax.png';
+import hlogo from '../assets/ethereum.png';
+import { Web3Button } from '@web3modal/react'
 //import { AppContext } from "../context/AppContext";
 
 const Navbar = () => {
@@ -25,22 +26,18 @@ const Navbar = () => {
       </div>
       <ul className="text-white md:flex hidden list-none flex-row justify-between items-center flex-initial">
         <li className="menu-transition mx-4 cursor-pointer border-b-2 border-transparent hover:border-blue-600">
-          <Link to="/">Item</Link>
+          <Link to="/swap">Swap</Link>
         </li>
         <li className="menu-transition mx-4 cursor-pointer border-b-2 border-transparent hover:border-blue-600">
-          <Link to="/"> Item</Link>
+          <Link to="/liquidity"> Liquidity</Link>
         </li>
         <li className="menu-transition mx-4 cursor-pointer border-b-2 border-transparent hover:border-blue-600">
-          <Link to="/"> Item</Link>
+          <Link to="/bets"> Bets</Link>
         </li>
-        <li className="bg-[#2952e3] py-2 px-7 mx-4 rounded-lg cursor-pointer hover:bg-[#2546bd]">
-          {/* <button onClick={connectWallet}>
-            {!currentAccount
-              ? "Connect Wallet"
-              : shortenAddress(currentAccount)}
-          </button> */}
-          <button>Connect Wallet</button>
+        <li className="menu-transition mx-4 cursor-pointer flex flex-row justify-center items-center my-5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-2 rounded-lg cursor-pointer hover:bg-[#2546bd]">
+          <Link to="/create"> Create Bet</Link>
         </li>
+          <Web3Button  icon="show" label="Connect Wallet" balance="show"  />
       </ul>
       <div className="flex relative">
         {!toggleMenu ? (
