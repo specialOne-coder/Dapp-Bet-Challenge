@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react'
-import { BetCard, Welcome } from '../components/index'
+import { BetCard, Loader, Welcome } from '../components/index'
 import { AppContext } from '../context/AppContext'
 
 const BetPage = () => {
-  const { getBets, bets } = useContext(AppContext)
+  const { getBets, bets, betAllowance } = useContext(AppContext)
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -14,16 +14,20 @@ const BetPage = () => {
   }, [])
   return (
     <div>
-      <div className="flex flex-wrap justify-center">
-        <div className=" w-full text-white text-center py-3 font-bold">
-          <p className=" text-4xl"> Bets</p> <br></br> <br />
-          <div className="flex justify-center items-start ">
-            {bets.map((bet, i) => (
+      <p className=" text-4xl text-center text-white"> Bets</p> <br></br> <br />
+      {bets.length == 0 ? (
+        <Loader />
+      ) : (
+        <div className="flex flex-wrap justify-center">
+          {bets
+            .sort(function (a, b) {
+              return b.id - a.id
+            })
+            .map((bet, i) => (
               <BetCard key={i} bet={bet} />
             ))}
-          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

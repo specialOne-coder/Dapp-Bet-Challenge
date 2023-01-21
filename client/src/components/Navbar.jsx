@@ -1,10 +1,11 @@
 import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { HiMenuAlt4 } from 'react-icons/hi'
-import { AiOutlineClose } from 'react-icons/ai'
+import { HiMenuAlt4, HiOutlineCubeTransparent } from 'react-icons/hi'
+import { AiOutlineClose, AiOutlineSwap } from 'react-icons/ai'
 //import { shortenAddress } from "../utils/ShortAdress";
 import { FaHammer } from 'react-icons/fa'
-import hlogo from '../assets/ethereum.png';
+import hlogo from '../assets/ethereum.png'
+import { GiMoneyStack, GiWantedReward } from 'react-icons/gi'
 import { Web3Button } from '@web3modal/react'
 //import { AppContext } from "../context/AppContext";
 
@@ -17,7 +18,7 @@ const Navbar = () => {
     <nav className="w-full flex md:justify-center justify-between items-center p-4">
       <div className="md:flex-[0.8] flex-initial justify-center items-center">
         <div className="text-white md:flex  list-none fex-row justify-between items-center fex-initial">
-          <div className="menu-transition bg-[#2952e3] py-1 px-3 mx-4 rounded-lg cursor-pointer hover:bg-[#2546bd]">
+          <div className="menu-transition bg-gradient-to-r from-cyan-500 to-blue-500 py-1 px-3 mx-4 rounded-lg cursor-pointer hover:bg-[#2546bd]">
             <Link to="/">
               <img className="head_logo w-10" src={hlogo} />
             </Link>
@@ -37,7 +38,7 @@ const Navbar = () => {
         <li className="menu-transition mx-4 cursor-pointer flex flex-row justify-center items-center my-5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-2 rounded-lg cursor-pointer hover:bg-[#2546bd]">
           <Link to="/create"> Create Bet</Link>
         </li>
-          <Web3Button  icon="show" label="Connect Wallet" balance="show"  />
+        <Web3Button icon="show" label="Connect Wallet" balance="show" />
       </ul>
       <div className="flex relative">
         {!toggleMenu ? (
@@ -64,51 +65,51 @@ const Navbar = () => {
               <AiOutlineClose onClick={() => setToggleMenu(false)} />
             </li>
             <li className="mx-4 cursor-pointer">
-              <button className="flex flex-row items-center my-2 border-solid border-2  mr-2 bg-[#fff] rounded-md cursor-pointer h-8 w-40 place-content-center">
-                <FaHammer
+              <button className="flex flex-row items-center my-2 border-solid border-2  mr-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-md cursor-pointer h-8 w-40 place-content-center">
+                <AiOutlineSwap
                   fontSize={20}
                   className="text-white text-center pr-1"
-                  color="#2546bd"
+                  color="#fff"
                 />
-                <p className="text-[#2546bd] font-bold  pr-1 pl-1">
-                  <Link to="/"> Item</Link>
+                <p className="text-white font-bold  pr-1 pl-1">
+                  <Link to="/swap">Swap</Link>
                 </p>
               </button>
             </li>
 
             <li className="mx-4 cursor-pointer">
-              <button className="flex flex-row items-center my-2 border-solid border-2  mr-2 bg-[#fff] rounded-md cursor-pointer h-8 w-40 place-content-center">
-                <FaHammer
+              <button className="flex flex-row items-center my-2 border-solid border-2  mr-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-md cursor-pointer h-8 w-40 place-content-center">
+                <GiMoneyStack
                   fontSize={20}
                   className="text-white text-center pr-1"
-                  color="#2546bd"
+                  color="#fff"
                 />
-                <p className="text-[#2546bd] font-bold  pr-1 pl-1">
-                  <Link to="/"> Item</Link>
+                <p className="text-white font-bold  pr-1 pl-1">
+                  <Link to="/liquidity"> Liquidity</Link>
                 </p>
               </button>
             </li>
             <li className="mx-4 cursor-pointer">
-              <button className="flex flex-row items-center my-2 border-solid border-2  mr-2 bg-[#fff] rounded-md cursor-pointer h-8 w-40 place-content-center">
-                <FaHammer
+              <button className="flex flex-row items-center my-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 border-solid border-2  mr-2  rounded-md cursor-pointer h-8 w-40 place-content-center">
+                <HiOutlineCubeTransparent
                   fontSize={20}
                   className="text-white text-center pr-1"
-                  color="#2546bd"
+                  color="#fff"
                 />
-                <p className="text-[#2546bd] font-bold  pr-1 pl-1">
-                  <Link to="/"> Item</Link>
+                <p className="text-white font-bold  pr-1 pl-1">
+                  <Link to="/bets"> Bets</Link>
                 </p>
               </button>
             </li>
             <li className="mx-4 cursor-pointer">
-              <button className="flex flex-row items-center my-2 border-solid border-2  mr-2 bg-[#fff] rounded-md cursor-pointer h-8 w-40 place-content-center">
+              <button className="flex flex-row items-center my-2 border-solid border-2  mr-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-md cursor-pointer h-8 w-40 place-content-center">
                 <FaHammer
                   fontSize={20}
                   className="text-white text-center pr-1"
-                  color="#2546bd"
+                  color="#fff"
                 />
-                <p className="text-[#2546bd] font-bold  pr-1 pl-1">
-                  <Link to="/"> Item</Link>
+                <p className="text-white font-bold  pr-1 pl-1">
+                    <Link to="/create"> Create Bet</Link>
                 </p>
               </button>
             </li>

@@ -1,13 +1,18 @@
 import React, { useContext, useEffect } from 'react'
 import { ethereumClient, wagmiClient } from '../App'
-import { Welcome } from '../components/index'
+import { Loader, Welcome } from '../components/index'
 import { AppContext } from '../context/AppContext'
 import { chainlist, MY_TOKEN_LIST } from '../utils/chain-constants'
 
 const CreateBet = () => {
-  const { approve, getBetAllowance, betAllowance, createBet } = useContext(
-    AppContext,
-  )
+  const {
+    approve,
+    getBetAllowance,
+    betAllowance,
+    createBet,
+    loading,
+    loadingApprove,
+  } = useContext(AppContext)
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -18,7 +23,7 @@ const CreateBet = () => {
         ethereumClient.getAccount().address,
         chainlist[0].BetAddress,
       )
-    }, 5000)
+    }, 1000)
 
     return () => clearInterval(interval)
   }, [])
@@ -31,7 +36,7 @@ const CreateBet = () => {
           against you
         </h1>
       </div>
-      <div className="welcome flex max-w-[1500px] m-auto justify-center items-center ">
+      <div className="welcome flex max-w-[1500px] m-auto justify-center items-center mt-5">
         <div className="bg-slate-300 py-20 px-10  justify-center items-center border-gray-300 rounded-lg ">
           <div className="flex w-10 ">
             <div className=""></div>
@@ -125,7 +130,7 @@ const CreateBet = () => {
                   )
                 }}
               >
-                Approve
+                {loadingApprove ? <Loader /> : 'Approve'}
               </button>
             )}
             <button
@@ -143,16 +148,17 @@ const CreateBet = () => {
                   prediction,
                   amount,
                 }
-
-                await createBet(
-                  chainlist[0].BetAddress,
-                  chainlist[0].BetAbi,
-                  ethereumClient.getAccount().address,
-                  data,
-                )
+                if (futureDate && deadline && prediction && amount) {
+                  await createBet(
+                    chainlist[0].BetAddress,
+                    chainlist[0].BetAbi,
+                    ethereumClient.getAccount().address,
+                    data,
+                  )
+                }
               }}
             >
-              Create Bet
+              {loading ? <Loader /> : 'Create Bet'}
             </button>
           </div>
         </div>

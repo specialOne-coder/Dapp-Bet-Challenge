@@ -11,19 +11,33 @@ const SwapUI = () => {
 
   return (
     <div>
-      <h1 className="text-3xl text-white  text-center ">
+      <h1 className="text-3xl text-white  text-center mt-20 ">
         Wrap Matic and buy $BET
       </h1>
       <div className="flex flex-1 justify-center items-center flex-col  mf:ml-30">
         <h1 className="text-lg text-white md:w-3/6 text-center mt-2">
-          If fetching price not working, please refresh the page or go to{' '}
-          <a target="_blank" href={url} className="text-blue-600">
+          Get fund on{' '}
+          <a
+            target="_blank"
+            className="text-blue-500 text-bold"
+            href="https://faucet.polygon.technology/"
+          >
+            Mumbai Testnet faucet{' '}
+          </a>
+          if you don't have any Matic. If fetching price not working, please
+          refresh the page or go to{' '}
+          <a target="_blank" href={url} className="text-blue-500 text-bold">
             Uniswap
           </a>{' '}
-          for buy $BET on Mumbai Testnet
+          for buy $BET on Mumbai Testnet.
         </h1>
-        <div className="mt-5">
-          <SwapWidget tokenList={SwapTokens}/>
+        <center>
+          <p className='font-bold flex flex-row text-center text-white'>
+          Token Address : {chainlist[0].TokenAddress}
+          </p>
+          </center>
+        <div className="mt-5 py-5">
+          <SwapWidget tokenList={SwapTokens} />
         </div>
       </div>
     </div>

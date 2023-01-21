@@ -9,6 +9,8 @@ export const AppContext = createContext()
 
 export const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(false)
+  const [loadingApprove, setLoadingApprove] = useState(false)
+  const [loadingRemove, setLoadingRemove] = useState(false)
   const [currentAccount, setCurrentAccount] = useState()
   const [networkId, setNetworkId] = useState()
   const [networkRpc, setNetworkRpc] = useState()
@@ -119,7 +121,7 @@ export const AppProvider = ({ children }) => {
   }
 
   async function approve(contractAddress, contractABI, user, spender, amount) {
-    // const contract = await init(contractAddress, contractABI, signer)
+    setLoadingApprove(true)
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner(user)
     const contract = new ethers.Contract(contractAddress, contractABI, signer)
@@ -147,7 +149,9 @@ export const AppProvider = ({ children }) => {
             button: false,
             footer: `<a target="_blank" href=${chainlist[0].explorer}/tx/${transaction}/>See Transaction</a>`,
           })
+          setLoadingApprove(false);
         } catch (error) {
+          setLoadingApprove(false);
           console.log('Error: ', error)
           swal({
             icon: 'error',
@@ -159,6 +163,7 @@ export const AppProvider = ({ children }) => {
         }
       })
       .catch((err) => {
+        setLoadingApprove(false);
         swal({
           position: 'center',
           icon: 'error',
@@ -177,6 +182,7 @@ export const AppProvider = ({ children }) => {
     amountA,
     amountB,
   ) {
+    setLoading(true);
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner(user)
     const contract = new ethers.Contract(contractAddress, contractABI, signer)
@@ -203,8 +209,10 @@ export const AppProvider = ({ children }) => {
             button: false,
             footer: `<a target="_blank" href=${chainlist[0].explorer}/tx/${transaction}/>See Transaction</a>`,
           })
+          setLoading(false);
         } catch (error) {
           console.log('2 eme try : ', error)
+          setLoading(false);
           swal({
             icon: 'error',
             title: 'Oops...',
@@ -215,6 +223,7 @@ export const AppProvider = ({ children }) => {
         }
       })
       .catch((err) => {
+        setLoading(false);
         swal({
           position: 'center',
           icon: 'error',
@@ -228,6 +237,7 @@ export const AppProvider = ({ children }) => {
   }
 
   async function removeLiquidity(contractAddress, contractABI, user) {
+    setLoadingRemove(true);
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner(user)
     const contract = new ethers.Contract(contractAddress, contractABI, signer)
@@ -254,8 +264,9 @@ export const AppProvider = ({ children }) => {
             button: false,
             footer: `<a target="_blank" href=${chainlist[0].explorer}/tx/${transaction}/>See Transaction</a>`,
           })
+          setLoadingRemove(false);
         } catch (error) {
-          console.log('2 eme try : ', error)
+          setLoadingRemove(false);
           swal({
             icon: 'error',
             title: 'Oops...',
@@ -273,6 +284,7 @@ export const AppProvider = ({ children }) => {
           className: 'text-center',
           button: false,
         })
+        setLoadingRemove(false);
       })
   }
 
@@ -297,7 +309,8 @@ export const AppProvider = ({ children }) => {
       let amount = BigNumber.from(bet.betAmount).toString()
       let playersLenght = BigNumber.from(bet.totalPlayers).toString()
       let players = []
-      let pool = 0;
+      let pool = 0
+      let id = i
       for (let j = 0; j < playersLenght; j++) {
         let player = await contract.callStatic.betPlayers(i, j)
         let deposit = BigNumber.from(player.depositAmount).toString()
@@ -312,6 +325,7 @@ export const AppProvider = ({ children }) => {
         players.push(playerStruct)
       }
       const structuredBet = {
+        id,
         time,
         deadline,
         status,
@@ -329,16 +343,21 @@ export const AppProvider = ({ children }) => {
   }
 
   async function createBet(contractAddress, contractABI, user, data) {
+    setLoading(true);
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner(user)
     const contract = new ethers.Contract(contractAddress, contractABI, signer)
     //let reserves = await getReserves(contractAddress, contractABI, signer, user)
     let convertA = ethers.utils.parseUnits(data.amount.toString(), 18)
+    let convertPrediction = ethers.utils.parseUnits(
+      data.prediction.toString(),
+      18,
+    )
     await contract.callStatic
       .createBet(
         dateToTimestamp(data.futureDate),
         dateToTimestamp(data.deadline),
-        data.prediction,
+        convertPrediction,
         convertA,
         {
           gasLimit: 500000,
@@ -350,7 +369,7 @@ export const AppProvider = ({ children }) => {
           let create = await contract.createBet(
             dateToTimestamp(data.futureDate),
             dateToTimestamp(data.deadline),
-            data.prediction,
+            convertPrediction,
             convertA,
             {
               gasLimit: 500000,
@@ -367,6 +386,7 @@ export const AppProvider = ({ children }) => {
             button: false,
             footer: `<a target="_blank" href=${chainlist[0].explorer}/tx/${transaction}/>See Transaction</a>`,
           })
+          setLoading(false);
         } catch (error) {
           console.log('2 eme try : ', error)
           swal({
@@ -376,6 +396,7 @@ export const AppProvider = ({ children }) => {
             size: '5',
             confirm: 'OK',
           })
+          setLoading(false);
         }
       })
       .catch((err) => {
@@ -387,10 +408,121 @@ export const AppProvider = ({ children }) => {
           className: 'text-center',
           button: false,
         })
+        setLoading(false);
       })
   }
 
-  async function bet() {}
+  async function participation(
+    contractAddress,
+    contractABI,
+    user,
+    data,
+    userPrediction,
+  ) {
+    setLoading(true);
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    const signer = provider.getSigner(user)
+    const contract = new ethers.Contract(contractAddress, contractABI, signer)
+    console.log('data: ', data)
+    await contract.callStatic
+      .bet(data.id, userPrediction, data.amount, {
+        gasLimit: 500000,
+      })
+      .then(async (res) => {
+        let transaction
+        try {
+          let part = await contract.bet(data.id, userPrediction, data.amount, {
+            gasLimit: 500000,
+          })
+          transaction = part.hash
+          await part.wait()
+          swal({
+            position: 'center',
+            icon: 'success',
+            title: `Bet created `,
+            text: `Now share your bet with friends and let them bet against you`,
+            className: 'text-center',
+            button: false,
+            footer: `<a target="_blank" href=${chainlist[0].explorer}/tx/${transaction}/>See Transaction</a>`,
+          })
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          console.log('2 eme try : ', error)
+          swal({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Bet creation failed, retry',
+            size: '5',
+            confirm: 'OK',
+          })
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        swal({
+          position: 'center',
+          icon: 'error',
+          title: `Something went wrong `,
+          text: `${err.message}`,
+          className: 'text-center',
+          button: false,
+        })
+      })
+  }
+
+  async function reward(contractAddress, contractABI, user, betId) {
+    setLoading(false);
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    const signer = provider.getSigner(user)
+    const contract = new ethers.Contract(contractAddress, contractABI, signer)
+    console.log('data: ', betId)
+    await contract.callStatic
+      .rewards(betId, {
+        gasLimit: 500000,
+      })
+      .then(async (res) => {
+        let transaction
+        try {
+          let reward = await contract.rewards(betId, {
+            gasLimit: 500000,
+          })
+          transaction = reward.hash
+          await reward.wait()
+          swal({
+            position: 'center',
+            icon: 'success',
+            title: `Bet created `,
+            text: `Now share your bet with friends and let them bet against you`,
+            className: 'text-center',
+            button: false,
+            footer: `<a target="_blank" href=${chainlist[0].explorer}/tx/${transaction}/>See Transaction</a>`,
+          })
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          console.log('2 eme try : ', error)
+          swal({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Bet creation failed, retry',
+            size: '5',
+            confirm: 'OK',
+          })
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        swal({
+          position: 'center',
+          icon: 'error',
+          title: `Something went wrong `,
+          text: `${err.message}`,
+          className: 'text-center',
+          button: false,
+        })
+      })
+  }
 
   return (
     <AppContext.Provider
@@ -401,9 +533,14 @@ export const AppProvider = ({ children }) => {
         getAllowanceA,
         getAllowanceB,
         getBetAllowance,
+        participation,
+        loading,
+        loadingApprove,
         reserves,
+        loadingRemove,
         approve,
         addLiquidity,
+        reward,
         removeLiquidity,
         betAllowance,
         bets,

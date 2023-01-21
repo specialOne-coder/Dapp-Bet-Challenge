@@ -5,12 +5,11 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { AppContext } from '../context/AppContext'
 import { ethereumClient, wagmiClient } from '../App'
+import Loader from './Loader'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
-
-
 
 const companyCommonStyles =
   'min-h-[70px] sm:px-0 px-2 sm:min-w-[220px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white'
@@ -19,8 +18,11 @@ const Liquidity = () => {
   const {
     getReserves,
     reserves,
+    loadingRemove,
     getAllowanceA,
     getAllowanceB,
+    loading,
+    loadingApprove,
     tokenAllowance,
     addLiquidity,
     tokenBAllowance,
@@ -90,7 +92,11 @@ const Liquidity = () => {
               </div>
               <div className={companyCommonStyles}>
                 <p className="font-bold text-[20px]">
-                  Your liquidity <p className='font-semibold text-[12px] text-center mt-2'> {12.5} %APR</p>
+                  Your liquidity{' '}
+                  <p className="font-semibold text-[12px] text-center mt-2">
+                    {' '}
+                    {12.5} %APR
+                  </p>
                 </p>
               </div>
 
@@ -100,44 +106,50 @@ const Liquidity = () => {
                 <p className="font-bold text-[20px]">Retrieve</p>
               </div>
             </div>
-            {reserves[0] > 0 && reserves[1] > 0 && reserves[2] > 0 ? (
-              <div className="grid sm:grid-cols-4 w-full" key={1}>
-                <>
-                  <div
-                    className={`rounded-tl-2xl sm:rounded-bl-2xl ${companyCommonStyles}`}
-                  >
-                    <p className="">
-                      {Wmatic.toFixed(2)} $WMATIC , {Bet.toFixed(2)} $BET
-                    </p>
-                  </div>
-                  <div className={companyCommonStyles}>
-                    {lpToken.toFixed(2)} lpToken
-                  </div>
-                  <div className={companyCommonStyles}>
-                    {ul0.toFixed(2)} $WMATIC , {ul1.toFixed(2)} $BET
-                  </div>
-                  <div
-                    className={`sm:rounded-tr-2xl rounded-br-2xl ${companyCommonStyles}`}
-                  >
-                    <li className="bg-[#2952e3] py-2 px-7 mx-4 rounded-lg cursor-pointer hover:bg-[#2546bd]">
-                      <button
-                        onClick={async () => {
-                          await removeLiquidity(
-                            chainlist[0].AMMAddress,
-                            chainlist[0].AmmAbi,
-                            ethereumClient.getAccount().address,
-                          )
-                        }}
-                      >
-                        Remove liquidity
-                      </button>
-                    </li>
-                  </div>
-                </>
-              </div>
-            ) : (
-              <h1 className="text-xl text-white  py-5">Loading... </h1>
-            )}
+
+            <div className="grid sm:grid-cols-4 w-full" key={1}>
+              <>
+                <div
+                  className={`rounded-tl-2xl sm:rounded-bl-2xl ${companyCommonStyles}`}
+                >
+                  <p className="">
+                    {Wmatic.toFixed(2)} $WMATIC , {Bet.toFixed(2)} $BET
+                  </p>
+                </div>
+                {reserves[0] > 0 && reserves[1] > 0 && reserves[2] > 0 ? (
+                  <>
+                    <div className={companyCommonStyles}>
+                      {lpToken.toFixed(2)} lpToken
+                    </div>
+                    <div className={companyCommonStyles}>
+                      {ul0.toFixed(2)} $WMATIC , {ul1.toFixed(2)} $BET
+                    </div>
+                    <div
+                      className={`sm:rounded-tr-2xl rounded-br-2xl ${companyCommonStyles}`}
+                    >
+                      <li className="bg-[#2952e3] py-2 px-7 mx-4 rounded-lg cursor-pointer hover:bg-[#2546bd]">
+                        <button
+                          onClick={async () => {
+                            await removeLiquidity(
+                              chainlist[0].AMMAddress,
+                              chainlist[0].AmmAbi,
+                              ethereumClient.getAccount().address,
+                            )
+                          }}
+                        >
+                          {loadingRemove ? <Loader /> : 'Remove liquidity'}
+                        </button>
+                      </li>
+                    </div>
+                  </>
+                ) : (
+                  <center>
+                    <h1 className="text-xl text-white  py-5">Loading... </h1>
+                  </center>
+                )}
+              </>
+            </div>
+
             {/* ))
           )} } */}
           </div>
@@ -148,10 +160,11 @@ const Liquidity = () => {
         <h1 className="text-md text-white md:w-3/6 text-center mt-2">
           Buy $BET and Wrap your matic to $WMATIC. Approve your $WMATIC and $BET
           tokens to the AMM and add liquidity to earn rewards. Be sure to
-          provide two assets of equal value
+          provide two assets of equal value. Be sure to have $wmatic, $bet and
+          approve them before adding
         </h1>
       </div>
-      <div className="welcome flex max-w-[1500px] m-auto justify-center items-center ">
+      <div className="welcome flex max-w-[1500px] m-auto justify-center items-center py-5">
         <div className="bg-slate-300 py-20 px-10  justify-center items-center border-gray-300 rounded-lg ">
           <div className="flex w-10 ">
             <div className="">
@@ -398,10 +411,16 @@ const Liquidity = () => {
                     }
                   }}
                 >
-                  {tokenAllowance > 0
-                    ? `Approve ${MY_TOKEN_LIST[1].name}`
-                    : `Approve ${MY_TOKEN_LIST[0].name}`}
-                  {/* Approve */}
+                  {loadingApprove ? (
+                    <Loader />
+                  ) : (
+                    <>
+                      {tokenAllowance > 0
+                        ? `Approve ${MY_TOKEN_LIST[1].name}`
+                        : `Approve ${MY_TOKEN_LIST[0].name}`}
+                      {/* Approve */}
+                    </>
+                  )}
                 </button>
               </>
             )}
@@ -412,16 +431,18 @@ const Liquidity = () => {
                 const amountA = document.getElementById('amountA').value
                 const amountB = document.getElementById('amountB').value
                 console.log('Add Liquidity :', chainlist[0].AMMAddress)
-                await addLiquidity(
-                  chainlist[0].AMMAddress,
-                  chainlist[0].AmmAbi,
-                  ethereumClient.getAccount().address,
-                  amountA,
-                  amountB,
-                )
+                if (amountA > 0 && amountB > 0) {
+                  await addLiquidity(
+                    chainlist[0].AMMAddress,
+                    chainlist[0].AmmAbi,
+                    ethereumClient.getAccount().address,
+                    amountA,
+                    amountB,
+                  )
+                }
               }}
             >
-              Add Liquidity
+              {loading ? <Loader /> : 'Add Liquidity'}
             </button>
           </div>
         </div>
