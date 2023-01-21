@@ -1,9 +1,20 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { SiBeatport, SiEthereum } from 'react-icons/si'
 import { BsInfoCircle } from 'react-icons/bs'
 import { FaMonero, FaVoteYea } from 'react-icons/fa'
+import { shortenAddress } from '../utils/ShortAddress'
 
-const BetCard = () => {
+const BetCard = ({ bet }) => {
+  function timestampToDate(timestamp) {
+    var date = new Date(timestamp * 1000)
+    return date.toDateString()
+  }
+
+  function timestampToDateHour(timestamp) {
+    var date = new Date(timestamp * 1000)
+    return date.toUTCString()
+  }
+
   return (
     <div className="">
       <div className="flex w-full justify-center items-center">
@@ -29,29 +40,50 @@ const BetCard = () => {
                   <div className="flex flex-col">
                     <div className="border-double border-4 border-white border rounded-lg text-white mt-5">
                       {' '}
-                      <p className="ml-5 mr-5"> Owner : {'0x0000'}</p>
+                      Owner :
+                      <p className="font-semibold text-[15px] text-center mt-1">
+                        {' '}
+                        {shortenAddress(bet.players[0].addr)}
+                      </p>
                     </div>
                     <div className="border-double border-4 border-white border rounded-lg text-white mt-5">
                       {' '}
-                      <p className="ml-5 mr-5"> Prediction Date : {'18 April 2023'}</p>
+                      Prediction Date :
+                      <p className="font-semibold text-[15px] text-center mt-1">
+                        {' '}
+                        {timestampToDate(bet.time)}
+                      </p>
                     </div>
                     <div className="border-double border-4 border-white border rounded-lg text-white mt-5">
-                      {' '}
-                      <p className="ml-5 mr-5"> Prediction : {'1500$'}</p>
+                      {' '}Owner Ether prediction :
+                      <p className="font-semibold text-[15px] text-center mt-1">
+                        {' '}
+                         {bet.prediction} $USD
+                      </p>
                     </div>
+                    <div className="flex flex-row ">
+                      <div className="border-double border-4 border-white border rounded-lg text-white mt-5">
+                        {' '}
+                        <p className="ml-5 mr-5">
+                          {' '}
+                          Pool : {bet.pool / 10 ** 18} $BET
+                        </p>
+                      </div>
 
-                    <div className="border-double border-4 border-white border rounded-lg text-white mt-5">
-                      {' '}
-                      <p className="ml-5 mr-5"> Pool : {'100$'}</p>
+                      <div className="border-double ml-2 border-4 border-white border rounded-lg text-white mt-5">
+                        {' '}
+                        <p className="ml-5 mr-5">
+                          {' '}
+                          Price : {bet.players[0].deposit / 10 ** 18} $BET
+                        </p>
+                      </div>
                     </div>
-
                     <div className="border-double border-4 border-white border rounded-lg text-white mt-5">
-                      {' '}
-                      <p className="ml-5 mr-5"> Price : {'20 $BET'}</p>
-                    </div>
-                    <div className="border-double border-4 border-white border rounded-lg text-white mt-5">
-                      {' '}
-                      <p className="ml-5 mr-5"> Limit Date : {'12/01/23'}</p>
+                      {' '}Deadline :
+                      <p className="font-semibold text-[15px] text-center mt-1">
+                        {' '}
+                         {timestampToDateHour(bet.deadline)}
+                      </p>
                     </div>
                   </div>
                   <p className="text-white text-center font-semibold text-lg mt-1">
@@ -67,6 +99,31 @@ const BetCard = () => {
                     //   setDisable(false);
                     // }}
                     className="flex flex-row justify-center w-full items-center bg-[#2952e3] p-2 rounded-lg cursor-pointer mt-5"
+                  >
+                    {/* {loading && candidat === numero ? (
+                          <Loader taille={10} />
+                        ) : (
+                          <>
+                            <FaVoteYea fontSize={25} className="text-white mr-2" />
+                            <p className="text-white text-base font-semibold">
+                              Voter
+                            </p>
+                          </>
+                        )} */}
+                    <p className="text-white text-base font-semibold">
+                      Approve
+                    </p>
+                  </button>
+                  <button
+                    // key={numero}
+                    // type="button"
+                    // disabled={disable}
+                    // onClick={async () => {
+                    //   setDisable(true);
+                    //   await votePremierTour(numero);
+                    //   setDisable(false);
+                    // }}
+                    className="flex flex-row justify-center w-full items-center bg-[#2952e3] p-2 rounded-lg cursor-pointer mt-2"
                   >
                     {/* {loading && candidat === numero ? (
                           <Loader taille={10} />

@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "hardhat/console.sol";
 
 contract Bets is ChainlinkClient, ConfirmedOwner {
-    uint256 betIds = 0;
+    uint256 public betIds = 0;
 
     using Chainlink for Chainlink.Request;
 
@@ -34,6 +34,7 @@ contract Bets is ChainlinkClient, ConfirmedOwner {
         uint256 lastTimeToParticipate;
         Status status;
         uint finalPrice;
+        uint totalPlayers;
     }
 
     struct Player {
@@ -168,6 +169,12 @@ contract Bets is ChainlinkClient, ConfirmedOwner {
             _betAmount > 0 && _pricePrediction > 0,
             "You must send some ETH and predict price"
         );
+        require(
+            _time > block.timestamp &&
+                _lastTimeToParticipate > block.timestamp &&
+                _lastTimeToParticipate < _time,
+            "Time must be greater than current time"
+        );
         betToken.transferFrom(msg.sender, address(this), _betAmount);
         Bet memory userBet = Bet(
             _betAmount,
@@ -175,17 +182,22 @@ contract Bets is ChainlinkClient, ConfirmedOwner {
             _time,
             _lastTimeToParticipate,
             Status.START,
-            0
+            0, 
+            1
         );
         bets[betIds] = userBet;
         betPlayers[betIds].push(
-            Player(payable(msg.sender), _pricePrediction, msg.value)
+            Player(payable(msg.sender), _pricePrediction, _betAmount)
         );
         _incrementBetId();
     }
 
     // join bet
-    function bet(uint256 _betId, uint256 _pricePrediction,uint256 _betAmount) external payable {
+    function bet(
+        uint256 _betId,
+        uint256 _pricePrediction,
+        uint256 _betAmount
+    ) external payable {
         betToken.transferFrom(msg.sender, address(this), _betAmount);
         require(
             bets[_betId].status == Status.START ||
@@ -212,9 +224,10 @@ contract Bets is ChainlinkClient, ConfirmedOwner {
             );
         }
         betPlayers[_betId].push(
-            Player(payable(msg.sender), _pricePrediction, msg.value)
+            Player(payable(msg.sender), _pricePrediction, _betAmount)
         );
         Bet storage betm = bets[_betId];
+        betm.totalPlayers += 1;
         betm.status = Status.LOAD;
     }
 
@@ -222,7 +235,7 @@ contract Bets is ChainlinkClient, ConfirmedOwner {
     function rewards(uint256 _betId) external {
         require(block.timestamp >= bets[_betId].time, "Time is not due yet");
         require(betIds >= _betId, "BET_NOT_EXIST");
-        require(bets[_betId].status == Status.LOAD, "BET_ALREADY_FINISH");
+        require(bets[_betId].status != Status.FINISH, "BET_ALREADY_FINISH");
         uint256 reward = 0;
         uint256 length = betPlayers[_betId].length;
         int256[] memory _playersBets;

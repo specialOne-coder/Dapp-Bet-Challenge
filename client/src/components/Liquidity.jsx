@@ -10,13 +10,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-function computeOutput(event) {
-  let value = event.target.value
-}
 
-function computeOutputB(event) {
-  let value = event.target.value
-}
 
 const companyCommonStyles =
   'min-h-[70px] sm:px-0 px-2 sm:min-w-[220px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white'
@@ -24,7 +18,6 @@ const companyCommonStyles =
 const Liquidity = () => {
   const {
     getReserves,
-    getAllowance,
     reserves,
     getAllowanceA,
     getAllowanceB,
@@ -34,6 +27,21 @@ const Liquidity = () => {
     approve,
     removeLiquidity,
   } = useContext(AppContext)
+
+  const [amountB, setAmountB] = useState('')
+
+  const handleInputChange = (event) => {
+    if (reserves[0] > 0 || reserves[1] > 0) {
+      let amount1 = (event.target.value * reserves[1]) / reserves[0]
+      setAmountB(amount1)
+    }
+  }
+
+  let Wmatic = reserves[0] / 10 ** 18
+  let Bet = reserves[1] / 10 ** 18
+  let lpToken = reserves[2] / 10 ** 18
+  let ul0 = reserves[3] / 10 ** 18
+  let ul1 = reserves[4] / 10 ** 18
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -62,15 +70,6 @@ const Liquidity = () => {
     return () => clearInterval(interval)
   }, [])
 
-  function computeOutput(event) {
-    let r = reserves;
-    let val1 = event.target.value
-    computeOutputB(event, val1)
-  }
-
-  function computeOutputB(event) {
-    let val2 = event.target.value
-  }
   const [selectedTokenA, setSelectedTokenA] = useState(MY_TOKEN_LIST[0])
   const [selectedTokenB, setSelectedTokenB] = useState(MY_TOKEN_LIST[1])
 
@@ -84,14 +83,15 @@ const Liquidity = () => {
               <div
                 className={`rounded-tl-2xl sm:rounded-bl-2xl ${companyCommonStyles}`}
               >
-                <p className="font-bold text-[20px]">Tokens</p>
+                <p className="font-bold text-[20px]">Total liquidity</p>
               </div>
               <div className={companyCommonStyles}>
-                <p className="font-bold text-[20px]">LpToken</p>
+                <p className="font-bold text-[20px]"> Your LpToken</p>
               </div>
-
               <div className={companyCommonStyles}>
-                <p className="font-bold text-[20px]">APR</p>
+                <p className="font-bold text-[20px]">
+                  Your liquidity <p className='font-semibold text-[12px] text-center mt-2'> {12.5} %APR</p>
+                </p>
               </div>
 
               <div
@@ -107,13 +107,15 @@ const Liquidity = () => {
                     className={`rounded-tl-2xl sm:rounded-bl-2xl ${companyCommonStyles}`}
                   >
                     <p className="">
-                      {reserves[0]} $BET , {reserves[1]} $WMATIC
+                      {Wmatic.toFixed(2)} $WMATIC , {Bet.toFixed(2)} $BET
                     </p>
                   </div>
                   <div className={companyCommonStyles}>
-                    {reserves[2]} lpToken
+                    {lpToken.toFixed(2)} lpToken
                   </div>
-                  <div className={companyCommonStyles}>{12.5}% APR</div>
+                  <div className={companyCommonStyles}>
+                    {ul0.toFixed(2)} $WMATIC , {ul1.toFixed(2)} $BET
+                  </div>
                   <div
                     className={`sm:rounded-tr-2xl rounded-br-2xl ${companyCommonStyles}`}
                   >
@@ -246,7 +248,7 @@ const Liquidity = () => {
                 placeholder="0"
                 min="1"
                 max="1"
-                onChange={computeOutput}
+                onChange={handleInputChange}
                 required
               />
             </div>
@@ -339,16 +341,29 @@ const Liquidity = () => {
                 </Listbox>
               </div>
               <div className="flex-initial w-64">
-                <input
-                  type="number"
-                  id="amountB"
-                  className="w-[8rem] ml-2 bg-white border border-gray-300 rounded-md shadow-sm  text-left cursor-default focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm "
-                  placeholder="0"
-                  min="1"
-                  max="1"
-                  required
-                  onChange={computeOutputB}
-                />
+                {reserves[0] > 0 || reserves[1] > 0 ? (
+                  <input
+                    type="number"
+                    id="amountB"
+                    className="w-[8rem] ml-2 bg-white border border-gray-300 rounded-md shadow-sm  text-left cursor-default focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm "
+                    placeholder="0"
+                    min="1"
+                    max="1"
+                    value={amountB}
+                    onChange={handleInputChange}
+                    required
+                  />
+                ) : (
+                  <input
+                    type="number"
+                    id="amountB"
+                    className="w-[8rem] ml-2 bg-white border border-gray-300 rounded-md shadow-sm  text-left cursor-default focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm "
+                    placeholder="0"
+                    min="1"
+                    max="1"
+                    required
+                  />
+                )}
               </div>
             </div>
           </div>

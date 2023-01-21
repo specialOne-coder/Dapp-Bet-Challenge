@@ -5,6 +5,8 @@ export { default as Welcome } from './Welcome.jsx';
 export { default as SwapUI } from './SwapUI.jsx'; 
 export { default as Liquidity } from './Liquidity.jsx'; 
 export { default as BetCard } from './BetCard.jsx'; 
+export { default as Loader } from './Loader.jsx'; 
+
 
 
 

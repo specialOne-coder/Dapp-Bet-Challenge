@@ -57,10 +57,10 @@ contract AMM is ERC20, Ownable {
     // 2. Calculate the amount of lp tokens to mint
     // 3. Mint lp tokens to user
     // 4. Update reserves
-    function addLiquidity(uint _amount0, uint _amount1)
-        external
-        returns (uint shares)
-    {
+    function addLiquidity(
+        uint256 _amount0,
+        uint256 _amount1
+    ) external returns (uint shares) {
         tokenA.transferFrom(msg.sender, address(this), _amount0);
         tokenB.transferFrom(msg.sender, address(this), _amount1);
 
@@ -90,14 +90,22 @@ contract AMM is ERC20, Ownable {
         );
     }
 
+    function getUserLiquidity(
+        address _user
+    ) external view returns (uint amount0, uint amount1) {
+        uint shares = balanceOf(_user);
+        amount0 = (shares * reserve0) / totalSupply();
+        amount1 = (shares * reserve1) / totalSupply();
+        return (amount0, amount1);
+    }
+
     // Remove liquidity function
     // 1. Burn lp tokens from user
     // 2. Transfer tokens to user
     // 3. Update reserves
-    function removeLiquidity(uint _shares)
-        external
-        returns (uint amount0, uint amount1)
-    {
+    function removeLiquidity(
+        uint _shares
+    ) external returns (uint amount0, uint amount1) {
         uint bal0 = tokenA.balanceOf(address(this));
         uint bal1 = tokenB.balanceOf(address(this));
 
@@ -117,11 +125,10 @@ contract AMM is ERC20, Ownable {
     // 2. Calculate the amount of tokens to transfer to user
     // 3. Transfer tokenB to user
     // 4. Update reserves
-    function swap(address _tokenIn, uint _amountIn)
-        external
-        returns (uint amountOut)
-    {
-
+    function swap(
+        address _tokenIn,
+        uint _amountIn
+    ) external returns (uint amountOut) {
         require(
             _tokenIn == address(tokenA) || _tokenIn == address(tokenB),
             "invalid token"
@@ -140,8 +147,8 @@ contract AMM is ERC20, Ownable {
         ) = isToken0
                 ? (tokenA, tokenB, reserve0, reserve1)
                 : (tokenB, tokenA, reserve1, reserve0);
-        
-        require(_amountIn < reserveOut/2, "Price impact too high");
+
+        require(_amountIn < reserveOut / 2, "Price impact too high");
 
         tokenIn.transferFrom(msg.sender, address(this), _amountIn);
 
@@ -150,7 +157,7 @@ contract AMM is ERC20, Ownable {
         amountOut =
             (reserveOut * amountInWithFee) /
             (reserveIn + amountInWithFee);
-        
+
         // Price impact (Slippage)
         // uint market_price = amountInWithFee / amountOut;
         // uint mid_price = reserve0 / reserve1;

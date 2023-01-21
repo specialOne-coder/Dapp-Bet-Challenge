@@ -1,5 +1,5 @@
-import { ethers, BigNumber } from 'ethers'
 import React, { useState, createContext, useEffect } from 'react'
+import { ethers, BigNumber } from 'ethers'
 import { wagmiClient } from '../App'
 import { chainlist } from '../utils/chain-constants'
 // import { infuraId } from '../utils/app-constants'
@@ -17,6 +17,7 @@ export const AppProvider = ({ children }) => {
   const [tokenBAllowance, setAllowanceB] = useState()
   const [betAllowance, setBetAllowance] = useState()
   const [reserves, setReserves] = useState([])
+  const [bets, setBets] = useState([])
 
   function dateToTimestamp(dateString) {
     return new Date(dateString).getTime() / 1000
@@ -99,16 +100,22 @@ export const AppProvider = ({ children }) => {
       //gasLimit: 500000,
     })
     let finalReserve0 = BigNumber.from(reserve0).toString()
-    let reserve1 = await contract.reserve1({
+    let reserve1 = await contract.callStatic.reserve1({
       //gasLimit: 500000,
     })
-    let lpToken = await contract.balanceOf(user, {
+    let lpToken = await contract.callStatic.balanceOf(user, {
       //gasLimit: 500000,
     })
     let finalReserve1 = BigNumber.from(reserve1).toString()
     let lpt = BigNumber.from(lpToken).toString()
-    setReserves([finalReserve0, finalReserve1, lpt])
-    return [finalReserve0, finalReserve1, lpt]
+    let userL = await contract.callStatic.getUserLiquidity(user, {})
+    console.log('User Liquidity: ', userL)
+    let ul0 = BigNumber.from(userL.amount0).toString()
+    let ul1 = BigNumber.from(userL.amount1).toString()
+
+    console.log('Reserves: ', finalReserve0, finalReserve1, lpt)
+    setReserves([finalReserve0, finalReserve1, lpt, ul0, ul1])
+    return [finalReserve0, finalReserve1, lpt, ul0, ul1]
   }
 
   async function approve(contractAddress, contractABI, user, spender, amount) {
@@ -173,15 +180,16 @@ export const AppProvider = ({ children }) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner(user)
     const contract = new ethers.Contract(contractAddress, contractABI, signer)
-    console.log('Contract: ', contract)
+    let convertA = ethers.utils.parseUnits(amountA.toString(), 18)
+    let convertB = ethers.utils.parseUnits(amountB.toString(), 18)
     let statics = await contract.callStatic
-      .addLiquidity(amountA, amountB, {
+      .addLiquidity(convertA, convertB, {
         gasLimit: 500000,
       })
       .then(async (res) => {
         let transaction
         try {
-          let add = await contract.addLiquidity(amountA, amountB, {
+          let add = await contract.addLiquidity(convertA, convertB, {
             gasLimit: 500000,
           })
           transaction = add.hash
@@ -272,12 +280,51 @@ export const AppProvider = ({ children }) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const contract = new ethers.Contract(
-      chainlist[0].contractAddress,
-      chainlist[0].contractABI,
+      chainlist[0].BetAddress,
+      chainlist[0].BetAbi,
       signer,
     )
-    let bets = await contract.getBets()
-    console.log('Bets: ', bets)
+    let betIds = await contract.callStatic.betIds({})
+    let conv = BigNumber.from(betIds).toString()
+    let bets = []
+    for (let i = 0; i < conv; i++) {
+      let bet = await contract.callStatic.bets(i)
+      let time = BigNumber.from(bet.time).toString()
+      let deadline = BigNumber.from(bet.lastTimeToParticipate).toString()
+      let status = BigNumber.from(bet.status).toString()
+      let prediction = BigNumber.from(bet.futurePrice).toString()
+      let finalPrice = BigNumber.from(bet.finalPrice).toString()
+      let amount = BigNumber.from(bet.betAmount).toString()
+      let playersLenght = BigNumber.from(bet.totalPlayers).toString()
+      let players = []
+      let pool = 0;
+      for (let j = 0; j < playersLenght; j++) {
+        let player = await contract.callStatic.betPlayers(i, j)
+        let deposit = BigNumber.from(player.depositAmount).toString()
+        let playerPrediction = BigNumber.from(player.pricePrediction).toString()
+        let addr = player.player
+        pool += parseInt(deposit)
+        let playerStruct = {
+          deposit,
+          playerPrediction,
+          addr,
+        }
+        players.push(playerStruct)
+      }
+      const structuredBet = {
+        time,
+        deadline,
+        status,
+        prediction,
+        finalPrice,
+        amount,
+        players,
+        pool,
+      }
+      bets.push(structuredBet)
+    }
+    console.log('bets: ', bets)
+    setBets(bets)
     return bets
   }
 
@@ -286,53 +333,61 @@ export const AppProvider = ({ children }) => {
     const signer = provider.getSigner(user)
     const contract = new ethers.Contract(contractAddress, contractABI, signer)
     //let reserves = await getReserves(contractAddress, contractABI, signer, user)
-
-    try {
-      contract.callStatic.createBet(
+    let convertA = ethers.utils.parseUnits(data.amount.toString(), 18)
+    await contract.callStatic
+      .createBet(
         dateToTimestamp(data.futureDate),
         dateToTimestamp(data.deadline),
         data.prediction,
-        data.amount,
+        convertA,
         {
           gasLimit: 500000,
         },
       )
-    } catch (error) {
-      swal('Error', 'error', 'error')
-      //throw error
-    }
-    let transaction
-    try {
-      let create = await contract.createBet(
-        dateToTimestamp(data.futureDate),
-        dateToTimestamp(data.deadline),
-        data.prediction,
-        data.amount,
-        {
-          gasLimit: 500000,
-        },
-      )
-      transaction = create.hash
-      await create.wait()
-      swal({
-        position: 'center',
-        icon: 'success',
-        title: `Bet created `,
-        text: `Now share your bet with friends and let them bet against you`,
-        className: 'text-center',
-        button: false,
-        footer: `<a target="_blank" href=${chainlist[0].explorer}/tx/${transaction}/>See Transaction</a>`,
+      .then(async (res) => {
+        let transaction
+        try {
+          let create = await contract.createBet(
+            dateToTimestamp(data.futureDate),
+            dateToTimestamp(data.deadline),
+            data.prediction,
+            convertA,
+            {
+              gasLimit: 500000,
+            },
+          )
+          transaction = create.hash
+          await create.wait()
+          swal({
+            position: 'center',
+            icon: 'success',
+            title: `Bet created `,
+            text: `Now share your bet with friends and let them bet against you`,
+            className: 'text-center',
+            button: false,
+            footer: `<a target="_blank" href=${chainlist[0].explorer}/tx/${transaction}/>See Transaction</a>`,
+          })
+        } catch (error) {
+          console.log('2 eme try : ', error)
+          swal({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Bet creation failed, retry',
+            size: '5',
+            confirm: 'OK',
+          })
+        }
       })
-    } catch (error) {
-      console.log('2 eme try : ', error)
-      swal({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Bet creation failed, retry',
-        size: '5',
-        confirm: 'OK',
+      .catch((err) => {
+        swal({
+          position: 'center',
+          icon: 'error',
+          title: `Something went wrong `,
+          text: `${err.message}`,
+          className: 'text-center',
+          button: false,
+        })
       })
-    }
   }
 
   async function bet() {}
@@ -351,7 +406,9 @@ export const AppProvider = ({ children }) => {
         addLiquidity,
         removeLiquidity,
         betAllowance,
+        bets,
         createBet,
+        getBets,
       }}
     >
       {children}

@@ -11,3 +11,5 @@ Automated market maker
 -- Liquidity ui
 -- bet ui
 -- context
+-- approve and participate
+-- test reward
