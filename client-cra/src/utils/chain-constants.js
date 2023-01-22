@@ -16,7 +16,7 @@ export const chainlist = [
     AmmAbi: amm_abi.abi,
     TokenAbi: token_abi.abi,
     BetAbi: bet_abi.abi,
-    BetAddress: '0x43F211618127A2E314e47658a8676A57279aFf7d',
+    BetAddress: '0xCfdb613dF7fb7a761d8C4963Ed113b4bFd156796',
     TokenAddress: '0x6E072Ae62ed777875971F5016967E138F2F71F70',
     AMMAddress: '0xeB3636a3300b49A5f6A312FAe0F460eC8B6bFADa',
   },

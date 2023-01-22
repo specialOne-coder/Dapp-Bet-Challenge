@@ -246,15 +246,14 @@ contract Bets is ChainlinkClient, ConfirmedOwner {
         bytes32 request = getHistoricalPrice(bets[_betId].time, _betId);
         int finalResult = int(requestResponse[request]);
         uint256 clos = uint(_closest(finalResult, _playersBets));
-        for (uint256 i = 0; i < betPlayers[_betId].length; i++) {
-            if (betPlayers[_betId][i].pricePrediction == clos) {
-                betToken.transfer(betPlayers[_betId][i].player, reward);
-                //betPlayers[_betId][i].player.transfer(reward);
-                return;
-            }
-        }
         Bet storage betM = bets[_betId];
         betM.status = Status.FINISH;
         betM.finalPrice = uint(finalResult);
+        for (uint256 i = 0; i < betPlayers[_betId].length; i++) {
+            if (betPlayers[_betId][i].pricePrediction == clos) {
+                betToken.transfer(betPlayers[_betId][i].player, reward);
+                return;
+            }
+        }
     }
 }
