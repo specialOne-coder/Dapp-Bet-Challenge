@@ -1,7 +1,5 @@
 # AMM , Betting DAPP Challenge
 
-For start run ``` npm install ``` to install all dependencies.
-
 ### Smart contrat
 
 - Constant AMM for add, remove liquidity, swap token. (x/y = dx/dy)
