@@ -1,0 +1,213 @@
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+.menu-transition {
+  transition: all .4s ease-in-out;
+}
+
+@keyframes App-logo-spin {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg);
+  }
+}
+
+/* portable */
+@media screen and (max-width: 1280px) {
+  .welcome {
+      padding: 50px 15px 50px 15px;
+  }
+  .welcome-title {
+      font-size: 3rem;
+      line-height: 1;
+  }
+  .wall {
+      padding: 50px 15px 50px 15px;
+  }
+  .wall-title {
+      font-size: 3rem;
+      line-height: 1;
+  }
+  .collection-title {
+      font-size: 2.5rem;
+      line-height: 1;
+  }
+  .mint-title {
+      font-size: 3rem;
+      line-height: 1;
+  }
+  .gallery-title {
+      font-size: 3rem;
+      line-height: 1;
+  }
+}
+
+/* portable */
+@media screen and (max-width: 1024px) {
+  .welcome-div-text {
+      padding-left: 1rem;
+      padding-right: 1rem;
+  }
+  .wall-img {
+      padding-left: 1rem;
+      padding-right: 1rem;
+  }
+  .wall {
+      margin-bottom: 100px;
+  }
+}
+
+/* tablet */
+@media screen and (max-width: 912px) {
+   .welcome-img {
+       display: none;
+   }
+  .welcome-div-text {
+      width: 100%;
+      flex: 100%;
+      text-align: center;
+  }
+  .welcome-button {
+      justify-content: center;
+      width: 100%;
+  }
+  .wall {
+      flex-wrap: wrap;
+  }
+  .wall-img {
+      width: 100%;
+      flex: 100%;
+      justify-content: center;
+  }
+  .wall-img img{
+      width: 400px;
+  }
+  .wall-text {
+      width: 100%;
+      flex: 100%;
+      justify-content: center;
+      text-align: center;
+  }
+  .gallery {
+      padding-top: 50px;
+      padding-bottom: 50px;
+  }
+  .gallery-div {
+      padding-top: 50px;
+      padding-bottom: 50px;
+  }
+  .gallery-div-nft {
+      width: 25%;
+  }
+}
+
+/* tablet */
+@media screen and (max-width: 768px) {
+   .collection-div {
+       padding-top: 1rem;
+       padding-bottom: 1rem;
+   }
+  .collection-network {
+      margin-bottom: 50px;
+  }
+  .footer {
+      justify-content: space-between;
+  }
+  .footer-div {
+      padding: 1.5rem;
+  }
+  .footer-div ul li {
+      margin: 0;
+  }
+  .mint-title {
+      font-size: 2.5rem;
+  }
+  .welcome-title {
+      font-size: 2.5rem;
+  }
+  .wall-title {
+      font-size: 2.5rem;
+  }
+  .wall-collection-title {
+      font-size: 3rem;
+  }
+  .wall {
+      margin-bottom: 50px;
+  }
+  .gallery-title {
+      font-size: 2.5rem;
+  }
+}
+
+/* mobile landscape */
+@media screen and (max-width: 640px) {
+  .mint-title {
+      text-align: center;
+  }
+  .mint {
+      padding-right: 10px;
+      padding-left: 10px;
+  }
+  .gallery {
+      padding-right: 10px;
+      padding-left: 10px;
+  }
+  .gallery-title {
+      text-align: center;
+  }
+  .gallery-div-nft {
+      width: 33%;
+  }
+}
+
+/* mobile portrait */
+@media screen and (max-width: 468px) {
+  .footer .logo img {
+      display: none;
+  }
+  .footer-div .text-name {
+      padding: 0;
+  }
+  .footer-div {
+      padding: 1rem;
+  }
+  .wall-text {
+      padding-left: 1rem;
+      padding-right: 1rem;
+  }
+  .mint form button{
+      margin-left: 0;
+  }
+  .head_logo {
+      width: 40px;
+  }
+}

@@ -64,13 +64,13 @@ contract AMM is ERC20, Ownable {
         tokenA.transferFrom(msg.sender, address(this), _amount0);
         tokenB.transferFrom(msg.sender, address(this), _amount1);
 
-        // same token amount deposit check
-        if (reserve0 > 0 || reserve1 > 0) {
-            require(
-                reserve0 * _amount1 == reserve1 * _amount0,
-                "x / y != dx / dy"
-            );
-        }
+        // same token amount deposit check | front check error, so let it be
+        // if (reserve0 > 0 || reserve1 > 0) {
+        //     require(
+        //         reserve0 * _amount1 == reserve1 * _amount0,
+        //         "x / y != dx / dy"
+        //     );
+        // } 
 
         // compute lp token amount
         if (totalSupply() == 0) {

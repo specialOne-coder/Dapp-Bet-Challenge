@@ -33,21 +33,21 @@ module.exports = async function ({ deployments, getNamedAccounts }) {
   console.log(`>>> your address: ${deployer}`)
   console.log(`On [${hre.network.name}] `)
 
-  await deploy('Bets', {
-    // Put your contract name here
-    from: deployer,
-    args: ["0x6E072Ae62ed777875971F5016967E138F2F71F70"],
-    log: true,
-    waitConfirmations: 1,
-  })
+  // await deploy('Bets', {
+  //   // Put your contract name here
+  //   from: deployer,
+  //   args: ["0x6E072Ae62ed777875971F5016967E138F2F71F70"],
+  //   log: true,
+  //   waitConfirmations: 1,
+  // })
 
-  await deploy('Betis', {
-    // Put your contract name here
-    from: deployer,
-    args: [100000000],
-    log: true,
-    waitConfirmations: 1,
-  })
+  // await deploy('Betis', {
+  //   // Put your contract name here
+  //   from: deployer,
+  //   args: [100000000],
+  //   log: true,
+  //   waitConfirmations: 1,
+  // })
 
   await deploy('AMM', {
     // Put your contract name here
